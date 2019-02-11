@@ -27,7 +27,7 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.ratings
     ratings = @all_ratings
     ratings = params[:ratings].keys if params.keys.include? "ratings"
-    @movies = Movie.where(:rating=>rating).order(sort_by)
+    @movies = Movie.where(:rating => rating).order(sort_by)
   end 
 
   def new
