@@ -23,6 +23,8 @@ class MoviesController < ApplicationController
     else 
       @movies = Movie.all 
     end 
+    
+    @all_ratings = Movie.all.uniq.pluck(:rating).sort
   end 
 
   def new
