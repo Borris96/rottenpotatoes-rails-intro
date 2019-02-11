@@ -25,10 +25,6 @@ class MoviesController < ApplicationController
     end 
   end 
 
-  def index
-    @movies = Movie.all
-  end
-
   def new
     # default: render 'new' template
   end
