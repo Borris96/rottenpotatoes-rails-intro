@@ -11,8 +11,12 @@ class MoviesController < ApplicationController
   end
 
   def index 
-    if params[:sort] 
-      case params[:sort] 
+    
+    sort = params[:sort] || session[:sort]
+    session[:sort] = sort
+    
+    if sort
+      case sort
       when "title" 
         @title_sort = "hilite" 
         @movies = Movie.order("title").all 
@@ -25,10 +29,21 @@ class MoviesController < ApplicationController
     end 
     
     @all_ratings = Movie.ratings
-    @ratings = @all_ratings
-    @ratings = params[:ratings].keys if params.keys.include? "ratings"
-    @movies = Movie.where(:rating => @ratings).order(params[:sort])
     
+    if params.keys.include? "ratings"
+      @ratings = params[:ratings].keys if params[:ratings].is_a? Hash
+      @ratings = params[:ratings] if params[:ratings].is_a? Array
+    elsif session.keys.include? "ratings" 
+      @ratings = session[:ratings]
+    else
+      @ratings = @all_ratings
+    end
+    
+    session[:ratings] = @ratings
+    redirect_to movies_path(:sort => session[:sort], :ratings => session[:ratings]) if !((params.keys.include? 'sort') || (params.keys.include? 'ratings'))
+    #session[:ratings] = params[:ratings].keys if params.keys.include? "ratings"
+    #@ratings = session[:ratings]
+    @movies = Movie.where(:rating => @ratings).order(sort)
   end 
 
   def new
